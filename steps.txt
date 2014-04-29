@@ -1,0 +1,9 @@
+*** END CHECKING PRODUCT SEQUENCE ***,No other setup engine running under the same installiverse id.  Continuing...,First Product Sequence
+*** END CHECKING PRODUCT SEQUENCE ***,*** FEATURE TREE DUMP ***,Second Product Sequence
+Updating setup engine,Done updating setup engine.,Updating Setupengine
+Current state ids:,Returned from new calculator: DUs to Uninstall:,Calculating changes needed to reach install state
+** CACHING DUs...,Resetting target install state to point at cache...,Cache DUs
+** EXECUTE UNINSTALLING DUs...,** EXECUTE INSTALLING DUs...,Execute Uninstall
+** EXECUTE INSTALLING DUs...,** UNCACHING DUs...,Execute Install
+** UNCACHING DUs...,*** END CHECKING PRODUCT SEQUENCE ***,Uncaching DUs
+*** END CHECKING PRODUCT SEQUENCE ***,** UNCACHING DUs...,Third Product Sequence
