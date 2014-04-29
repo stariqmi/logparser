@@ -31,7 +31,6 @@ class compareKnownissues():
 					print 'No known errors found, but possible new errors found in the logs, the errors are: ' + ', '.join(set(self.founderrors))
 					return set(self.founderrors)
 
-		
 
 ins = open( "C:\Users\I841363\Desktop\\test.txt", "rU" )
 array = []
