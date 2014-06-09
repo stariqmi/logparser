@@ -1,0 +1,10 @@
+Step,Duration,Start Time,End Time
+First Product Sequence,0,06:42:54.391,06:42:54.726
+Second Product Sequence,6,07:11:38.438,07:18:08.813
+Updating Setupengine,0,07:18:36.971,07:18:37.876
+Calculating changes needed to reach install state,0,07:18:44.053,07:19:07.453
+Cache DUs,7,07:19:07.531,07:26:22.055
+Execute Uninstall,76,08:00:19.137,09:16:22.645
+Execute Install,178,09:16:22.645,12:14:51.096
+Uncaching DUs,2,12:14:51.096,12:17:28.050
+Third Product Sequence,2,12:17:28.050,12:20:27.341
