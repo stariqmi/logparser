@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Log Parser Source Code</title>
+</head>
+<body>
+<h4><a href="https://github.com/stariqmi/logparser">Github</a></h4>
+<h3>main.py</h3>
+	<!-- HTML generated using hilite.me --><div style="background: #272822; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #f92672">import</span> <span style="color: #f8f8f2">sys</span>
+<span style="color: #f92672">from</span> <span style="color: #f8f8f2">CoordinateParser</span> <span style="color: #f92672">import</span> <span style="color: #f8f8f2">Processor</span>
+<span style="color: #f92672">from</span> <span style="color: #f8f8f2">StepParser</span> <span style="color: #f92672">import</span> <span style="color: #f8f8f2">StepParser</span>
+
+<span style="color: #75715e"># Open setupengine passed via commandline</span>
+<span style="color: #f8f8f2">logfile</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">open(sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">argv[</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">])</span>
+
+<span style="color: #75715e"># Get all the lines</span>
+<span style="color: #f8f8f2">lines</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">logfile</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">readlines()</span>
+
+<span style="color: #75715e"># Parse steps</span>
+<span style="color: #f8f8f2">stepParser</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">StepParser(lines)</span>
+<span style="color: #f8f8f2">stepParser</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">parse()</span>
+</pre></div>
+<h3>StepParser.py</h3>
+<!-- HTML generated using hilite.me --><div style="background: #272822; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #f92672">from</span> <span style="color: #f8f8f2">datetime</span> <span style="color: #f92672">import</span> <span style="color: #f8f8f2">datetime</span>
+<span style="color: #f92672">from</span> <span style="color: #f8f8f2">CoordinateParser</span> <span style="color: #f92672">import</span> <span style="color: #f8f8f2">Processor</span>
+
+<span style="color: #66d9ef">class</span> <span style="color: #a6e22e">StepParser</span><span style="color: #f8f8f2">(object):</span>
+	<span style="color: #66d9ef">def</span> <span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">lines):</span>
+		<span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">steps</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">[]</span>
+		<span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">lines</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">lines</span>
+
+		<span style="color: #75715e"># Step times</span>
+		<span style="color: #f8f8f2">stepfile</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">open(</span><span style="color: #e6db74">&quot;steps.txt&quot;</span><span style="color: #f8f8f2">)</span>
+		<span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">line</span> <span style="color: #f92672">in</span> <span style="color: #f8f8f2">stepfile</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">readlines():</span>
+			<span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">steps</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">append(line</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">split(</span><span style="color: #e6db74">&quot;,&quot;</span><span style="color: #f8f8f2">))</span>
+
+	<span style="color: #75715e"># Helper function to convert time to minutes</span>
+	<span style="color: #66d9ef">def</span> <span style="color: #a6e22e">convertToMins</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">time_string):</span>
+		<span style="color: #f8f8f2">split</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">time_string</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">split(</span><span style="color: #e6db74">&quot;:&quot;</span><span style="color: #f8f8f2">)</span>
+		<span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">(int(split[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">])</span><span style="color: #f92672">*</span><span style="color: #ae81ff">60</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">+</span> <span style="color: #f8f8f2">int(split[</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">])</span>
+
+	<span style="color: #66d9ef">def</span> <span style="color: #a6e22e">parse</span><span style="color: #f8f8f2">(self):</span>			
+
+		<span style="color: #75715e"># Step tracker</span>
+		<span style="color: #f8f8f2">tracker</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span>
+		<span style="color: #f8f8f2">started</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">False</span>
+		<span style="color: #f8f8f2">line_num</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span>
+
+		<span style="color: #75715e"># Function variables referencing to instance variables</span>
+		<span style="color: #f8f8f2">steps</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">steps</span>
+		<span style="color: #f8f8f2">lines</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">lines</span>
+
+		<span style="color: #75715e"># Loop through all the lines while trackers are left</span>
+		<span style="color: #66d9ef">while</span> <span style="color: #f8f8f2">tracker</span> <span style="color: #f92672">&lt;</span> <span style="color: #f8f8f2">len(steps):</span>
+
+			<span style="color: #f8f8f2">line</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">lines[line_num]</span>
+
+			<span style="color: #75715e"># If step starting point is same as previous step&#39;s ending point</span>
+			<span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">steps[tracker][</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">==</span> <span style="color: #f8f8f2">steps[tracker</span><span style="color: #f92672">-</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">][</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">and</span> <span style="color: #f92672">not</span> <span style="color: #f8f8f2">started:</span>
+				<span style="color: #f8f8f2">steps[tracker]</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">append(steps[tracker</span><span style="color: #f92672">-</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">][</span><span style="color: #ae81ff">4</span><span style="color: #f8f8f2">])</span>	<span style="color: #75715e"># Push the ending point of the previous tracker into the step </span>
+				<span style="color: #f8f8f2">started</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">True</span>
+
+			<span style="color: #75715e"># If the step starting point is in the line</span>
+			<span style="color: #66d9ef">elif</span> <span style="color: #f8f8f2">steps[tracker][</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">in</span> <span style="color: #f8f8f2">line</span> <span style="color: #f92672">and</span> <span style="color: #f92672">not</span> <span style="color: #f8f8f2">started:</span>
+				<span style="color: #f8f8f2">steps[tracker]</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">append(line</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">split()[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">])</span>	<span style="color: #75715e"># Push the starting time into the step</span>
+				<span style="color: #f8f8f2">started</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">True</span>
+
+			<span style="color: #75715e"># If the step endig point is in the line</span>
+			<span style="color: #66d9ef">elif</span> <span style="color: #f8f8f2">steps[tracker][</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">in</span> <span style="color: #f8f8f2">line:</span>
+				<span style="color: #f8f8f2">steps[tracker]</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">append(line</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">split()[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">])</span>	<span style="color: #75715e"># Push the ending time into the step</span>
+				<span style="color: #f8f8f2">tracker</span> <span style="color: #f92672">+=</span> <span style="color: #ae81ff">1</span>							<span style="color: #75715e"># Start tracking next step</span>
+				<span style="color: #f8f8f2">started</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">False</span>
+
+			<span style="color: #f8f8f2">line_num</span> <span style="color: #f92672">+=</span> <span style="color: #ae81ff">1</span>
+				
+
+
+		<span style="color: #75715e"># Coordinates Parsing</span>
+		<span style="color: #f8f8f2">coord_processor</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">Processor(lines)</span>
+		<span style="color: #f8f8f2">coord_processor</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">parse()</span>
+
+		<span style="color: #75715e"># Write duration to a csv</span>
+		<span style="color: #f8f8f2">step_csv</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">open(</span><span style="color: #e6db74">&quot;step_duration.csv&quot;</span><span style="color: #f8f8f2">,</span><span style="color: #e6db74">&quot;w&quot;</span><span style="color: #f8f8f2">)</span>
+		<span style="color: #f8f8f2">step_csv</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">write(</span><span style="color: #e6db74">&quot;Step,Duration,Start Time,End Time</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&quot;</span><span style="color: #f8f8f2">)</span>
+
+		<span style="color: #75715e"># Loop over all the steps collected</span>
+		<span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">step</span> <span style="color: #f92672">in</span> <span style="color: #f8f8f2">steps:</span>
+			<span style="color: #f8f8f2">start</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">datetime</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">strptime(step[</span><span style="color: #f92672">-</span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">]</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">split(</span><span style="color: #e6db74">&quot;.&quot;</span><span style="color: #f8f8f2">)[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">],</span><span style="color: #e6db74">&quot;%H:%M:%S&quot;</span><span style="color: #f8f8f2">)</span>
+			<span style="color: #f8f8f2">end</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">datetime</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">strptime(step[</span><span style="color: #f92672">-</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">]</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">split(</span><span style="color: #e6db74">&quot;.&quot;</span><span style="color: #f8f8f2">)[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">],</span><span style="color: #e6db74">&quot;%H:%M:%S&quot;</span><span style="color: #f8f8f2">)</span>
+			<span style="color: #f8f8f2">diff</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">convertToMins(str(end</span> <span style="color: #f92672">-</span> <span style="color: #f8f8f2">start))</span>
+			<span style="color: #f8f8f2">step_csv</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">write(</span><span style="color: #e6db74">&quot;{0},{1},{2},{3}</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&quot;</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">format(step[</span><span style="color: #f92672">-</span><span style="color: #ae81ff">3</span><span style="color: #f8f8f2">]</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">strip(),str(diff),step[</span><span style="color: #f92672">-</span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">],step[</span><span style="color: #f92672">-</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">]))</span>
+
+		<span style="color: #f8f8f2">step_csv</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">close()</span>
+</pre></div>
+
+<h3>CoordinateParser.py</h3>
+<!-- HTML generated using hilite.me --><div style="background: #272822; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #f92672">from</span> <span style="color: #f8f8f2">datetime</span> <span style="color: #f92672">import</span> <span style="color: #f8f8f2">datetime</span>
+
+<span style="color: #75715e"># Processor Class</span>
+<span style="color: #66d9ef">class</span> <span style="color: #a6e22e">Processor</span><span style="color: #f8f8f2">(object):</span>
+	<span style="color: #66d9ef">def</span> <span style="color: #a6e22e">__init__</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">lines):</span>
+		<span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">lines</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">lines</span>
+
+		<span style="color: #75715e"># Constants</span>
+		<span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">indicator</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&quot;Processing coordinate&quot;</span>
+		<span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">seq1_end</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&quot;No other setup engine running under the same installiverse id.  Continuing...&quot;</span>
+		<span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">seq2_end</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&quot;*** FEATURE TREE DUMP ***&quot;</span>
+		<span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">seq3_end</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&quot;** UNCACHING DUs...&quot;</span>
+
+	<span style="color: #66d9ef">def</span> <span style="color: #a6e22e">findPoint</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">line):</span>
+		<span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">(self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">indicator</span> <span style="color: #f92672">in</span> <span style="color: #f8f8f2">line)</span> <span style="color: #f92672">or</span> <span style="color: #f8f8f2">(self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">seq1_end</span> <span style="color: #f92672">in</span> <span style="color: #f8f8f2">line)</span> <span style="color: #f92672">or</span> <span style="color: #f8f8f2">(self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">seq2_end</span> <span style="color: #f92672">in</span> <span style="color: #f8f8f2">line)</span> <span style="color: #f92672">or</span> <span style="color: #f8f8f2">(self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">seq3_end</span> <span style="color: #f92672">in</span> <span style="color: #f8f8f2">line):</span>
+			<span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">True</span>
+		<span style="color: #66d9ef">else</span><span style="color: #f8f8f2">:</span>
+			<span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">False</span>
+
+	<span style="color: #66d9ef">def</span> <span style="color: #a6e22e">parse</span><span style="color: #f8f8f2">(self):</span>
+		<span style="color: #f8f8f2">points</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">[]</span>
+		<span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">line</span> <span style="color: #f92672">in</span> <span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">lines:</span>
+			<span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">findPoint(line):</span>
+				<span style="color: #f8f8f2">points</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">append(line)</span>
+
+		<span style="color: #f8f8f2">coord_csv</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">open(</span><span style="color: #e6db74">&quot;coordinates.csv&quot;</span><span style="color: #f8f8f2">,</span><span style="color: #e6db74">&quot;w&quot;</span><span style="color: #f8f8f2">)</span>
+		<span style="color: #f8f8f2">coord_csv</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">write(</span><span style="color: #e6db74">&quot;Seconds,Coordinate</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&quot;</span><span style="color: #f8f8f2">)</span>
+		<span style="color: #f8f8f2">x</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span>
+		<span style="color: #f8f8f2">fmt</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&#39;%Y-%m-%d %H:%M:%S&#39;</span>
+
+		<span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">i</span> <span style="color: #f92672">in</span> <span style="color: #f8f8f2">range(</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">,len(self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">lines)):</span>
+			<span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">indicator</span> <span style="color: #f92672">in</span> <span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">lines[i]:</span>
+				<span style="color: #f8f8f2">a</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">datetime</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">strptime(</span><span style="color: #e6db74">&quot;2010-01-01 &quot;</span> <span style="color: #f92672">+</span> <span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">lines[i]</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">split()[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">][:</span><span style="color: #f92672">-</span><span style="color: #ae81ff">4</span><span style="color: #f8f8f2">],</span> <span style="color: #f8f8f2">fmt)</span>
+				<span style="color: #f8f8f2">b</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">datetime</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">strptime(</span><span style="color: #e6db74">&quot;2010-01-01 &quot;</span> <span style="color: #f92672">+</span> <span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">lines[i</span><span style="color: #f92672">+</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">]</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">split()[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">][:</span><span style="color: #f92672">-</span><span style="color: #ae81ff">4</span><span style="color: #f8f8f2">],</span> <span style="color: #f8f8f2">fmt)</span>
+				<span style="color: #f8f8f2">coord_csv</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">write(str((b</span><span style="color: #f92672">-</span><span style="color: #f8f8f2">a)</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">seconds)</span> <span style="color: #f92672">+</span> <span style="color: #e6db74">&quot;,&quot;</span> <span style="color: #f92672">+</span> <span style="color: #f8f8f2">self</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">lines[i]</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">split(</span><span style="color: #e6db74">&quot;: &quot;</span><span style="color: #f8f8f2">)[</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">]</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">strip()</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">replace(</span><span style="color: #e6db74">&quot;,&quot;</span><span style="color: #f8f8f2">,</span><span style="color: #e6db74">&quot;.&quot;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">+</span> <span style="color: #e6db74">&quot;</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&quot;</span><span style="color: #f8f8f2">)</span>
+		
+</pre></div>
+
+
+
+</body>
+</html>
