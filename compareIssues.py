@@ -32,7 +32,7 @@ class compareKnownissues():
 					return set(self.founderrors)
 
 
-ins = open( "C:\Users\I841363\Desktop\\test.txt", "rU" )
+ins = open( "C:\Users\I841251\Documents\GitHub\logparser\\setupengine.log", "rU" )
 array = []
 for line in ins:
 	line = line.replace("\n", "")
@@ -40,7 +40,7 @@ for line in ins:
 ins.close()
 
 
-x = compareKnownissues(array, 'C:\Users\I841363\Desktop\\testinput.xlsx')
+x = compareKnownissues(array, 'C:\Users\I841251\Documents\GitHub\logparser\\Known_Install_log_Issues_.xlsx')
 y = x.compare()
 print y
 
