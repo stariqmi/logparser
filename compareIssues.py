@@ -1,4 +1,6 @@
 import xlrd
+import urllib
+from elementtree.ElementTree import parse
 
 
 class compareKnownissues():
@@ -32,7 +34,8 @@ class compareKnownissues():
 					return set(self.founderrors)
 
 
-ins = open( "C:\Users\I841363\Desktop\\test.txt", "rU" )
+#ins = open( "C:\Users\I841363\Desktop\\test.txt", "rU" )
+ins = open( "")
 array = []
 for line in ins:
 	line = line.replace("\n", "")
