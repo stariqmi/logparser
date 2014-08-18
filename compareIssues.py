@@ -1,5 +1,6 @@
 import xlrd
 import sys
+import re
 
 class compareKnownissues():
 	def __init__(self, founderrors, knownerrorspath):
@@ -28,11 +29,13 @@ setupengine = raw_input('Please input the filepath of a setupengine.log file: ')
 Known_Install_log_Issues = raw_input('Please input the filepath of Known_Install_log_Issues_.xlsx: ')
 
 ErrorArray = []
-with open(setupengine) as lines:
+
+with open(setupengine, 'r') as lines:
 	lines = lines.readlines()
 	for line in lines:
-		if 'error:' in line:
+		if re.match("(.*)(E|e)rror:(.*)", line):
 			ErrorArray.append(line)
+		#	ErrorArray.append("\n")
 		else:
 			pass
 
@@ -40,6 +43,9 @@ x = compareKnownissues(ErrorArray, Known_Install_log_Issues)
 y = x.compare()
 print y
 print ErrorArray
+#this part works: print lines
+
+#Absolute paths on Risa's home computer
 
 #/Users/risanewyear-ramirez/Desktop/LogParserWorkTermProject/logparser/setupengineKnownErrors.log
 #/Users/risanewyear-ramirez/Desktop/LogParserWorkTermProject/logparser/setupengineUnknownErrors.log
