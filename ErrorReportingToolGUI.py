@@ -1,4 +1,5 @@
 #GUI for Error Reporting tool. Should pop up when an error log is scanned.
+#On Risa's windows machine, have to call C:\Python27\python.exe explicitly for this to work
 
 import sys
 import wx
@@ -13,8 +14,8 @@ class ErrorReporting(wx.Frame):
 		ErrorReportingPanel = wx.Panel(self)
 		hbox = wx.BoxSizer(wx.HORIZONTAL)
 	
-		KnownErrorsList = open('/Users/risanewyear-ramirez/Desktop/LogParserWorkTermProject/logparser//KnownErrors.txt', 'r')
-		UnknownErrorsList = open('/Users/risanewyear-ramirez/Desktop/LogParserWorkTermProject/logparser//UnknownErrors.txt', 'r')
+		KnownErrorsList = open('C:\Users\I841251\Desktop\logparser\KnownErrors.txt', 'r')
+		UnknownErrorsList = open('C:\Users\I841251\Desktop\logparser\UnknownErrors.txt', 'r')
 	
 		# Set up the font, sizing, and boxes
 		font = wx.Font(10, wx.DEFAULT, wx.NORMAL, wx.BOLD)

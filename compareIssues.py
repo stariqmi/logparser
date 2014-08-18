@@ -10,8 +10,9 @@ class compareKnownissues():
 		workbook = xlrd.open_workbook(Known_Install_log_Issues)
 		sheet = workbook.sheet_by_index(0)
 		data = [sheet.cell_value(row, 0)for row in range(sheet.nrows)]
-		knownerrorsTXT = open('/Users/risanewyear-ramirez/Desktop/LogParserWorkTermProject/logparser//KnownErrors.txt', 'w')
-		unknownerrorsTXT = open('/Users/risanewyear-ramirez/Desktop/LogParserWorkTermProject/logparser//UnknownErrors.txt', 'w')
+		#Filepaths changed between Windows and Mac computers
+		knownerrorsTXT = open('C:\Users\I841251\Desktop\logparser\KnownErrors.txt', 'w')
+		unknownerrorsTXT = open('C:\Users\I841251\Desktop\logparser\UnknownErrors.txt', 'w')
 
 		for line in ErrorArray :
 			if line in set(data) :
@@ -24,9 +25,10 @@ class compareKnownissues():
 				unknownerrorsTXT.write("\n")
 		knownerrorsTXT.close()
 		unknownerrorsTXT.close()
-		
-setupengine = raw_input('Please input the filepath of a setupengine.log file: ')
-Known_Install_log_Issues = raw_input('Please input the filepath of Known_Install_log_Issues_.xlsx: ')
+
+#On Windows, it's easier to use input as opposed to raw_input on Mac
+setupengine = input('Please input the filepath of a setupengine.log file: ')
+Known_Install_log_Issues = input('Please input the filepath of Known_Install_log_Issues_.xlsx: ')
 
 ErrorArray = []
 
@@ -43,10 +45,13 @@ x = compareKnownissues(ErrorArray, Known_Install_log_Issues)
 y = x.compare()
 print y
 print ErrorArray
-#this part works: print lines
 
-#Absolute paths on Risa's home computer
-
+#Absolute paths on Risa's home computer (Mac)
 #/Users/risanewyear-ramirez/Desktop/LogParserWorkTermProject/logparser/setupengineKnownErrors.log
 #/Users/risanewyear-ramirez/Desktop/LogParserWorkTermProject/logparser/setupengineUnknownErrors.log
 #/Users/risanewyear-ramirez/Desktop/LogParserWorkTermProject/logparser/Known_Install_log_Issues_.xlsx
+
+#Absolute paths on Risa's work computer (Windows)
+#"C:\Users\I841251\Desktop\logparser\setupengineKnownErrors.log"
+#"C:\Users\I841251\Desktop\logparser\setupengineUnknownErrors.log"
+#'C:\Users\I841251\Desktop\logparser\Known_Install_log_Issues_.xlsx'
