@@ -1,65 +1,53 @@
-#gui for Error Reporting tool. Should pop up when an error log is scanned.
+#GUI for Error Reporting tool. Should pop up when an error log is scanned.
 
-
+import sys
 import wx
-class ErrorReporting(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent)
+import wx.lib.agw.hyperlink as hl
 
-        # create some sizers
-        mainSizer = wx.BoxSizer(wx.VERTICAL)
-        grid = wx.GridBagSizer(hgap=5, vgap=5)
-        hSizer = wx.BoxSizer(wx.HORIZONTAL)
+class ErrorReporting(wx.Frame):
+	def __init__(self, *args, **kw):
+		super(ErrorReporting, self).__init__(*args, **kw)
+		self.ErrorReportingGUI()
 
-        self.quote = wx.StaticText(self, label="Your quote: ")
-        grid.Add(self.quote, pos=(0,0))
+	def ErrorReportingGUI(self) :
+		ErrorReportingPanel = wx.Panel(self)
+	
+		KnownErrorsList = open('KnownErrors.txt')
+		UnknownErrorsList = open('UnknownErrors.txt')
+	
+		# Set up the font, sizing, and boxes
+		font = wx.Font(10, wx.DEFAULT, wx.NORMAL, wx.BOLD)
+		heading = wx.StaticText(self, label='Welcome to the Error Reporting Tool', pos=(140, 15))
+		heading.SetFont(font)
+		self.SetTitle( 'Error Reporting Tool')
+		self.UnknownErrorsTxtCtrl = wx.TextCtrl(ErrorReportingPanel, value=UnknownErrorsList, style=wx.TE_MULTILINE, size=(-1,295))
+		self.KnownErrorsListBox = wx.ListBox(self, 26, wx.DefaultPosition, (170, 130), KnownErrorsList, wx.LB_SINGLE)
+		
+		#Link to JIRA
+		JIRA = h1.HyperLinkCtrl(ErrorReportingPanel, -1, "JIRA", pos=(200,325), URL="https://sapjira.wdf.sap.corp/secure/ViewProfile.jspa/")
+	
+		#Line for decoration and labels for boxes
+		wx.StaticLine(self, pos=(25, 50), size=(300,1))
+		KnownErrorsText = wx.StaticText(self, label='Known Errors', pos=(30, 80))
+		KnownErrorsText.SetForegroundColour((34,139,34))
+		UnknownErrorsText = wx.StaticText(self, label='Unknown Errors', pos=(270, 80))
+		UnknownErrorsText.SetForegroundColour(255,0,0))
+		wx.StaticLine(self, pos=(25, 260), size=(300,1))
+	
+		# When there are unknown errors present, report them to JIRA
+		self.button =wx.Button(self, label="Report to JIRA", pos=(200, 325))
+		self.Bind(wx.EVT_BUTTON, self.OnClick,self.button)
 
-        # A multiline TextCtrl - This is here to show how the events work in this program, don't pay too much attention to it
-        self.logger = wx.TextCtrl(self, size=(200,300), style=wx.TE_MULTILINE | wx.TE_READONLY)
+		self.Centre()
+		self.Show(True)
 
-        # A button
-        self.button =wx.Button(self, label="Save")
-        self.Bind(wx.EVT_BUTTON, self.OnClick,self.button)
+	def OnClick(self,event):
+		self.show(JIRA)
 
-        # the edit control - one line version.
-        self.lblname = wx.StaticText(self, label="Your name :")
-        grid.Add(self.lblname, pos=(1,0))
-        self.editname = wx.TextCtrl(self, value="Enter here your name", size=(140,-1))
-        grid.Add(self.editname, pos=(1,1))
-        self.Bind(wx.EVT_TEXT, self.EvtText, self.editname)
-        self.Bind(wx.EVT_CHAR, self.EvtChar, self.editname)
 
-        # the combobox Control
-        self.sampleList = ['friends', 'advertising', 'web search', 'Yellow Pages']
-        self.lblhear = wx.StaticText(self, label="How did you hear from us ?")
-        grid.Add(self.lblhear, pos=(3,0))
-        self.edithear = wx.ComboBox(self, size=(95, -1), choices=self.sampleList, style=wx.CB_DROPDOWN)
-        grid.Add(self.edithear, pos=(3,1))
-        self.Bind(wx.EVT_COMBOBOX, self.EvtComboBox, self.edithear)
-        self.Bind(wx.EVT_TEXT, self.EvtText,self.edithear)
+def main() :
+	er = wx.App()
+	ErrorReporting(None)
+	er.MainLoop()
 
-        # add a spacer to the sizer
-        grid.Add((10, 40), pos=(2,0))
-
-        # Checkbox
-        self.insure = wx.CheckBox(self, label="Do you want Insured Shipment ?")
-        grid.Add(self.insure, pos=(4,0), span=(1,2), flag=wx.BOTTOM, border=5)
-        self.Bind(wx.EVT_CHECKBOX, self.EvtCheckBox, self.insure)
-
-        # Radio Boxes
-        radioList = ['blue', 'red', 'yellow', 'orange', 'green', 'purple', 'navy blue', 'black', 'gray']
-        rb = wx.RadioBox(self, label="What color would you like ?", pos=(20, 210), choices=radioList,  majorDimension=3,
-                         style=wx.RA_SPECIFY_COLS)
-        grid.Add(rb, pos=(5,0), span=(1,2))
-        self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, rb)
-
-        hSizer.Add(grid, 0, wx.ALL, 5)
-        hSizer.Add(self.logger)
-        mainSizer.Add(hSizer, 0, wx.ALL, 5)
-        mainSizer.Add(self.button, 0, wx.CENTER)
-        self.SetSizerAndFit(mainSizer)
-
-ErrorReportingTool = wx.App(False)
-GUI = MyFrame(None, 'Welcome to Error Reporting Tool')
-GUI.Show(True)
-ErrorReportingTool.MainLoop()
+main()

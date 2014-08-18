@@ -1,46 +1,46 @@
 import xlrd
-
+import sys
 
 class compareKnownissues():
 	def __init__(self, founderrors, knownerrorspath):
-
-		 
-
 		self.founderrors = founderrors
 		self.knownerrorspath = knownerrorspath
-
-
 	def compare(self):
-		if not self.founderrors:
-			return 0
-
-		workbook = xlrd.open_workbook(self.knownerrorspath)
+		workbook = xlrd.open_workbook(Known_Install_log_Issues)
 		sheet = workbook.sheet_by_index(0)
 		data = [sheet.cell_value(row, 0)for row in range(sheet.nrows)]
+		knownerrorsTXT = open('/Users/risanewyear-ramirez/Desktop/LogParserWorkTermProject/logparser//KnownErrors.txt', 'w')
+		unknownerrorsTXT = open('/Users/risanewyear-ramirez/Desktop/LogParserWorkTermProject/logparser//UnknownErrors.txt', 'w')
 
-		data = [str(i) for i in data]
-		data = [i.lower() for i in data]
-		if (set(data) & set(self.founderrors) and (len((set(data) & set(self.founderrors))) == len(self.founderrors))):
-			print 'Possible known errors found in the logs, the keywords matching are: ' + ', '.join(set(data) & set(self.founderrors))
-			return 1
+		for line in ErrorArray :
+			if line in set(data) :
+				knownerrorsTXT.truncate()
+				knownerrorsTXT.write(line)
+				knownerrorsTXT.write("\n")
+			else:
+				unknownerrorsTXT.truncate()
+				unknownerrorsTXT.write(line)
+				unknownerrorsTXT.write("\n")
+		knownerrorsTXT.close()
+		unknownerrorsTXT.close()
+		
+setupengine = raw_input('Please input the filepath of a setupengine.log file: ')
+Known_Install_log_Issues = raw_input('Please input the filepath of Known_Install_log_Issues_.xlsx: ')
+
+ErrorArray = []
+with open(setupengine) as lines:
+	lines = lines.readlines()
+	for line in lines:
+		if 'error:' in line:
+			ErrorArray.append(line)
 		else:
-				if(set(data) & set(self.founderrors)):
-					print 'The following known errors were found, the keywords matching are: '  + ', '.join(set(data) & set(self.founderrors)) + ' \nBut possible new errors are also found: ' + ', '.join(x for x in set(self.founderrors) if x not in set(data))
-					return 2
-				else:
-					print 'No known errors found, but possible new errors found in the logs, the errors are: ' + ', '.join(set(self.founderrors))
-					return set(self.founderrors)
+			pass
 
-
-ins = open( "C:\Users\I841251\Documents\GitHub\logparser\\setupengine.log", "rU" )
-array = []
-for line in ins:
-	line = line.replace("\n", "")
-    	array.append( line )
-ins.close()
-
-
-x = compareKnownissues(array, 'C:\Users\I841251\Documents\GitHub\logparser\\Known_Install_log_Issues_.xlsx')
+x = compareKnownissues(ErrorArray, Known_Install_log_Issues)
 y = x.compare()
 print y
+print ErrorArray
 
+#/Users/risanewyear-ramirez/Desktop/LogParserWorkTermProject/logparser/setupengineKnownErrors.log
+#/Users/risanewyear-ramirez/Desktop/LogParserWorkTermProject/logparser/setupengineUnknownErrors.log
+#/Users/risanewyear-ramirez/Desktop/LogParserWorkTermProject/logparser/Known_Install_log_Issues_.xlsx
